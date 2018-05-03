@@ -179,6 +179,8 @@ run(state => ReactDOM.render(<App {...state} />, el), [
 
 ## Middlewares
 
+Pass the middlewares you wish to use as the second parameter to `run()`. Here are a couple of useful ones:
+
 ```js
 const middlewares = {
   promise: (action, next) =>
