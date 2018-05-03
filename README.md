@@ -34,7 +34,7 @@ Call `mount` with the state and operations to connect them.
 
 ```js
 import { mount } from "hyperappish";
-const { run, actions } = mount(state, ops);
+const { run, actions } = mount(state, ops);
 ```
 
 Call `run` with a function to render your application. This function is passed the `state` every time it is changed. 
