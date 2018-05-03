@@ -1,4 +1,7 @@
 # hyperappish
+
+<a href="https://badge.fury.io/js/hyperappish"><img src="https://badge.fury.io/js/hyperappish.svg" alt="npm version" height="18"></a>
+
 A minimal, hyperapp-like, wired action, state handling thingy that works with plain react components
 
 ## Example application
