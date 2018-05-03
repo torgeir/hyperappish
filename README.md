@@ -2,15 +2,69 @@
 
 <a href="https://badge.fury.io/js/hyperappish"><img src="https://badge.fury.io/js/hyperappish.svg" alt="npm version" height="18"></a>
 
-A minimal, hyperapp-like, wired action, state handling thingy that works with plain react components
+A minimal, zero dependency (!), hyperapp-like, wired-action-state-handling-thingy that works with plain react components.
 
-## Example application
+```js
+npm install hyperappish
+```
+
+## How does it work?
+
+Create a state tree and a corresponding operations that modify each part of it. 
+
+```js
+const state = {
+  counter: {
+    n: 42
+  }
+};
+
+const ops = {
+  counter: {
+    increment: state => ({ n: state.n + 1 })
+  }
+};
+```
+
+Actions are automatically bound to the part of the state that matches the key under which they are defined in the operations object (much [like in hyperapp](https://github.com/hyperapp/hyperapp)).
+
+E.g. the `increment` action will get passed the `counter` part of the state, as it resides under the `counter` key of the `ops` object.
+
+Call `mount` with the state and operations to connect them.
+
+```js
+import { mount } from "hyperappish";
+const { run, actions } = mount(state, ops);
+```
+
+Call `run` with a function to render your application. This function is passed the `state` every time it is changed. 
+
+```js
+import React from "react";
+import { render } from "react-dom";
+
+const el = document.querySelector(".app");
+run(state => render(<button onClick={ () => actions.counter.increment() }>{state.counter}++</button>, el));
+```
+
+This renders a button with the value `42++` that when clicked will increment its value, over and over, ad infinitum.
+
+## Promises, observables and middleware
+
+This larger, contrieved example shows how to
+
+- **Compose promises in actions**
+- **Return state directly from actions, even from promises**
+- **Express advanced async flows declaratively with e.g. observables from rxjs**
+- **Use middlewares to extend the default behavior, e.g. for logging actions or state after each change**
 
 ```js
 import { mount } from "hyperappish";
 import React from "react";
 import ReactDOM from "react-dom";
 import Rx from "rxjs/Rx";
+
+const wait = s => new Promise(resolve => setTimeout(resolve, s * 1000));
 
 const state = {
   incrementer: {
@@ -37,7 +91,8 @@ const ops = {
   },
   users: {
     list: state =>
-      fetch("https://jsonplaceholder.typicode.com/users")
+      wait(2)
+        .then(_ => fetch("https://jsonplaceholder.typicode.com/users"))
         .then(res => res.json())
         .then(users => users.map(({ id, name }) => ({ id, name })))
         .then(list => ({ ...state, list }))
@@ -135,3 +190,7 @@ run(state => ReactDOM.render(<App {...state} />, el), [
   middlewares.logState
 ]);
 ```
+
+## Contributions?
+
+Most welcome! Hit me up with a PR or an issue.
