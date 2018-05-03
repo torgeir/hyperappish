@@ -49,7 +49,7 @@ run(state => render(<button onClick={ () => actions.counter.increment() }>{state
 
 This renders a button with the value `42++` that when clicked will increment its value, over and over, ad infinitum.
 
-[Play with it in codesandbox!](https://x3jvx127jq.codesandbox.io/)
+[Run it](https://x3jvx127jq.codesandbox.io/) or [play with it](https://codesandbox.io/s/x3jvx127jq) in codesandbox.
 
 ## Promises, observables and middleware
 
