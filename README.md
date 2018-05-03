@@ -172,6 +172,8 @@ run(state => ReactDOM.render(<App {...state} />, el), [
 ]);
 ```
 
+[Run it](https://wompl7v0y8.codesandbox.io/) or [play with it](https://codesandbox.io/s/wompl7v0y8) in codesandbox.
+
 ## Middlewares
 
 ```js
