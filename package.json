@@ -1,0 +1,18 @@
+{
+  "name": "hyperappish",
+  "version": "1.0.0",
+  "description":
+  "A minimal, hyperapp-like, wired action, state handling thingy that works with plain react components",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/torgeir/hyperappish.git"
+  },
+  "keywords": ["hyperapp", "react"],
+  "author": "@torgeir",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/torgeir/hyperappish/issues"
+  },
+  "homepage": "https://github.com/torgeir/hyperappish#readme"
+}
