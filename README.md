@@ -151,6 +151,28 @@ const App = ({ selection, users, counter, incrementer }) => (
   </div>
 );
 
+const incrementer = action$ =>
+  action$
+    .filter(action => action.type == "incrementer.start")
+    .switchMap(() =>
+      Rx.Observable.interval(100).takeUntil(
+        action$.filter(action => action.type == "incrementer.stop")
+      )
+    )
+    .map(() => actions.incrementer.increment());
+
+const el = document.querySelector(".app");
+run(state => ReactDOM.render(<App {...state} />, el), [
+  middlewares.promise,
+  middlewares.observable(incrementer),
+  middlewares.logActions,
+  middlewares.logState
+]);
+```
+
+## Middlewares
+
+```js
 const middlewares = {
   promise: (action, next) =>
     typeof action.result.then == "function"
@@ -171,24 +193,6 @@ const middlewares = {
 
   logState: (action, next) => (next(action), _ => console.log("state", state))
 };
-
-const incrementer = action$ =>
-  action$
-    .filter(action => action.type == "incrementer.start")
-    .switchMap(() =>
-      Rx.Observable.interval(100).takeUntil(
-        action$.filter(action => action.type == "incrementer.stop")
-      )
-    )
-    .map(() => actions.incrementer.increment());
-
-const el = document.querySelector(".app");
-run(state => ReactDOM.render(<App {...state} />, el), [
-  middlewares.promise,
-  middlewares.observable(incrementer),
-  middlewares.logActions,
-  middlewares.logState
-]);
 ```
 
 ## Contributions?
