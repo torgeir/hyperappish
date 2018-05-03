@@ -44,7 +44,10 @@ import React from "react";
 import { render } from "react-dom";
 
 const el = document.querySelector(".app");
-run(state => render(<button onClick={ () => actions.counter.increment() }>{state.counter}++</button>, el));
+run(state => 
+  render(<button onClick={ () => actions.counter.increment() }>
+           {state.counter}++
+         </button>, el));
 ```
 
 This renders a button with the value `42++` that when clicked will increment its value, over and over, ad infinitum.
