@@ -170,6 +170,8 @@ run(state => ReactDOM.render(<App {...state} />, el), [
 ]);
 ```
 
+[Play with a similar example in codesandbox!](https://x3jvx127jq.codesandbox.io/)
+
 ## Middlewares
 
 ```js
