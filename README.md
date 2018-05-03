@@ -10,7 +10,7 @@ npm install hyperappish
 
 ## How does it work?
 
-Create a state tree and a corresponding operations that modify each part of it. 
+Create a state tree and a corresponding operations object that modify each part of it. 
 
 ```js
 const state = {
