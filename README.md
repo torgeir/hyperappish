@@ -10,7 +10,7 @@ npm install hyperappish
 
 ## How does it work?
 
-Create a state tree and a corresponding operations object that modify each part of it. 
+Create a state tree and a corresponding operations object that modify each part of it.
 
 ```js
 const state = {
@@ -37,14 +37,14 @@ import { mount } from "hyperappish";
 const { run, actions } = mount(state, ops);
 ```
 
-Call `run` with a function to render your application. This function is passed the `state` every time it is changed. 
+Call `run` with a function to render your application. This function is passed the `state` every time it is changed.
 
 ```js
 import React from "react";
 import { render } from "react-dom";
 
 const el = document.querySelector(".app");
-run(state => 
+run(state =>
   render(<button onClick={ () => actions.counter.increment() }>
            {state.counter}++
          </button>, el));
@@ -104,7 +104,7 @@ const ops = {
   }
 };
 
-const { run, actions } = mount(state, ops);
+const { run, actions, middleware } = mount(state, ops);
 
 const SelectedUser = ({ user }) => (
   <div>
@@ -168,6 +168,7 @@ const incrementer = action$ =>
 
 const el = document.querySelector(".app");
 run(state => ReactDOM.render(<App {...state} />, el), [
+  middleware.callAction
   middlewares.promise,
   middlewares.observable(incrementer),
   middlewares.logActions,
@@ -179,7 +180,11 @@ run(state => ReactDOM.render(<App {...state} />, el), [
 
 ## Middlewares
 
-Pass the middlewares you wish to use as the second parameter to `run()`. Here are a couple of useful ones:
+If you choose to provide your own middlewares, remember to add `middleware.callAction`, returned from `mount` as the first middleware in the list. This is the middleware that hyperappish use to actuall call the action function with its corresponding state before returning control to the other middlewares in the list.
+
+You can override the default middleware by passing a list of middlewares as the second parameter to `run()`. These receive `action`s the `next` middleware in the list, and may choose how to proceed.
+
+Here are a couple of useful ones:
 
 ```js
 const middlewares = {
