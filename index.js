@@ -4,8 +4,8 @@ const getIn = (obj, [k, ...ks]) =>
   ks.length === 0 ? obj[k] : getIn(obj[k], ks);
 const setIn = (obj, [k, ...ks], val) =>
   ks.length === 0 ? (obj[k] = val) && val : setIn(obj[k], ks, val);
-const middleware = ([fn, next, ...fns]) => action =>
-  fn(action, next ? middleware([next, ...fns]) : identity);
+const composeMiddlewares = ([fn, next, ...fns]) => action =>
+  fn(action, next ? composeMiddlewares([next, ...fns]) : identity);
 
 export const mount = function(state, ops) {
   const wrappedState = { state };
@@ -31,17 +31,18 @@ export const mount = function(state, ops) {
 
   const createDispatchWithState = function(fn, field, state, path) {
     return function(...args) {
-      const result = fn(...args, proxy({ ...state }, path), actions);
-      const handlers = middleware(
+      const handlers = composeMiddlewares(
         middlewares.concat(
           renderAfter(action => setIn(state, path, action.result))
         )
       );
+
       const type = path
         .slice(1)
         .concat(field)
         .join(".");
-      handlers({ type, result });
+
+      handlers({ type, fn, args, state: proxy({ ...state }, path) });
     };
   };
 
@@ -61,9 +62,17 @@ export const mount = function(state, ops) {
 
   const actions = patch(ops, wrappedState, ["state"]);
 
+  const middleware = {
+    callAction: (action, next) => {
+      const result = action.fn(...action.args, action.state, actions);
+      return next({ ...action, result });
+    }
+  };
+
   return {
     actions,
-    run: renderAfter((_render, _middlewares = []) => {
+    middleware,
+    run: renderAfter((_render, _middlewares = [middleware.callAction]) => {
       render = _render;
       middlewares = _middlewares;
     })
