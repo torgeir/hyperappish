@@ -8,6 +8,8 @@
     "url": "git+https://github.com/torgeir/hyperappish.git"
   },
   "keywords": [
+    "state",
+    "actions",
     "hyperapp",
     "react"
   ],

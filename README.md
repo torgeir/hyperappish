@@ -1,8 +1,8 @@
 # hyperappish
 
-<a href="https://badge.fury.io/js/hyperappish"><img src="https://badge.fury.io/js/hyperappish.svg" alt="npm version" height="18"></a>
+[![npm](https://img.shields.io/npm/v/hyperappish.svg)](https://www.npmjs.org/package/hyperappish)
 
-A minimal, zero dependency (!), hyperapp-like, wired-action-state-handling-thingy that works with plain react components.
+A minimal, zero dependency (!), [hyperapp](https://hyperapp.js.org/)-like, wired action, state handling-thingy that works with plain react components.
 
 ```js
 npm install hyperappish
@@ -26,7 +26,7 @@ const ops = {
 };
 ```
 
-Actions are automatically bound to the part of the state that matches the key under which they are defined in the operations object (much [like in hyperapp](https://github.com/hyperapp/hyperapp)). They are called with this part of state automatically when invoked.
+Actions are automatically bound to the part of the state that matches the key under which they are defined in the operations object ([much like in hyperapp](https://github.com/hyperapp/hyperapp#getting-started)). They are called with this part of state automatically when invoked.
 
 E.g. the `increment` action will get passed the `counter` part of the state, as it resides under the `counter` key of the `ops` object, when it is invoked.
 
@@ -180,9 +180,9 @@ run(state => ReactDOM.render(<App {...state} />, el), [
 
 ## Middlewares
 
-If you choose to provide your own middlewares, remember to add `middleware.callAction`, returned from `mount` as the first middleware in the list. This is the middleware that hyperappish use to actuall call the action function with its corresponding state before returning control to the other middlewares in the list.
+If you choose to provide your own middlewares, remember to add `middleware.callAction` (returned from `mount`) as the first middleware in the list. This is the middleware that hyperappish use to actually call the action function with its corresponding state before returning control to the other middlewares in the list.
 
-You can override the default middleware by passing a list of middlewares as the second parameter to `run()`. These receive `action`s the `next` middleware in the list, and may choose how to proceed.
+You can override the default middleware by passing a list of middlewares as the second parameter to `run()`. These receive each `action` and the `next` middleware in the list, and may choose how to proceed.
 
 Here are a couple of useful ones:
 
