@@ -75,6 +75,7 @@ export const mount = function(state, ops) {
     run: renderAfter((_render, _middlewares = [middleware.callAction]) => {
       render = _render;
       middlewares = _middlewares;
-    })
+    }),
+    setState: renderAfter(state => doto(wrappedState, wrappedState => wrappedState.state = state))
   };
 };
