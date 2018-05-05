@@ -42,7 +42,7 @@ export const mount = function(state, ops) {
         .concat(field)
         .join(".");
 
-      handlers({ type, fn, args, state: proxy({ ...state }, path) });
+      handlers({ type, fn, args, state: proxy(Object.assign({}, state), path) });
     };
   };
 
