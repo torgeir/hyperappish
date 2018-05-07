@@ -10,7 +10,8 @@ export const composeMiddlewares = ([fn, next, ...fns]) => action =>
 export const mount = function(state, ops) {
   const wrappedState = { state };
 
-  let render, middlewares;
+  let render,
+    middlewares = [callAction];
 
   const renderAfter = fn => (...args) =>
     doto(fn(...args), _ =>
@@ -62,12 +63,12 @@ export const mount = function(state, ops) {
 
   const actions = patch(ops, wrappedState, ["state"]);
 
-  const middleware = {
-    callAction: (action, next) => {
-      const result = action.fn(...action.args, action.state, actions);
-      return next({ ...action, result });
-    }
-  };
+  function callAction(action, next) {
+    const result = action.fn(...action.args, action.state, actions);
+    return next({ ...action, result });
+  }
+
+  const middleware = { callAction };
 
   return {
     actions,
