@@ -1,10 +1,10 @@
-const identity = v => v;
-const doto = (o, fn) => (fn(o), o);
-const getIn = (obj, [k, ...ks]) =>
+export const identity = v => v;
+export const doto = (o, fn) => (fn(o), o);
+export const getIn = (obj, [k, ...ks]) =>
   ks.length === 0 ? obj[k] : getIn(obj[k], ks);
-const setIn = (obj, [k, ...ks], val) =>
+export const setIn = (obj, [k, ...ks], val) =>
   ks.length === 0 ? (obj[k] = val) && val : setIn(obj[k], ks, val);
-const composeMiddlewares = ([fn, next, ...fns]) => action =>
+export const composeMiddlewares = ([fn, next, ...fns]) => action =>
   fn(action, next ? composeMiddlewares([next, ...fns]) : identity);
 
 export const mount = function(state, ops) {
@@ -72,7 +72,7 @@ export const mount = function(state, ops) {
   return {
     actions,
     middleware,
-    run: renderAfter((_render, _middlewares = [middleware.callAction]) => {
+    run: renderAfter((_render, _middlewares = middlewares) => {
       render = _render;
       middlewares = _middlewares;
     }),
