@@ -43,7 +43,7 @@ export const mount = function(state, ops) {
         .concat(field)
         .join(".");
 
-      handlers({ type, fn, args, state: proxy({ ...state }, path) });
+      handlers({ type, fn, args, path, state: proxy({ ...state }, path) });
     };
   };
 
@@ -64,7 +64,9 @@ export const mount = function(state, ops) {
   const actions = patch(ops, wrappedState, ["state"]);
 
   function callAction(action, next) {
-    const result = action.fn(...action.args, action.state, actions);
+    const path = action.path.slice(1);
+    const ctx = path.length == 0 ? actions : getIn(actions, path);
+    const result = action.fn.call(ctx, ...action.args, action.state, actions);
     return next({ ...action, result });
   }
 
