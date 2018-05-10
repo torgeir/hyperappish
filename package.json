@@ -2,7 +2,11 @@
   "name": "hyperappish",
   "version": "1.4.1",
   "description": "A minimal, hyperapp-like, wired action, state handling thingy that works with plain react components",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "babel index.js --out-dir dist",
+    "prepublish": "build"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/torgeir/hyperappish.git"
@@ -18,5 +22,9 @@
   "bugs": {
     "url": "https://github.com/torgeir/hyperappish/issues"
   },
-  "homepage": "https://github.com/torgeir/hyperappish#readme"
+  "homepage": "https://github.com/torgeir/hyperappish#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0"
+  }
 }
