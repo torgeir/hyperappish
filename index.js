@@ -78,11 +78,9 @@ export const mount = function(state, ops) {
     return next({ ...action, result });
   }
 
-  const middleware = { callAction };
-
   return {
     actions,
-    middleware,
+    middleware: { callAction },
     run: renderAfter((_render, _middlewares = middlewares) => {
       render = _render;
       middlewares = _middlewares;
