@@ -3,7 +3,9 @@ export const doto = (o, fn) => (fn(o), o);
 export const getIn = (obj, [k, ...ks]) =>
   ks.length === 0 ? obj[k] : getIn(obj[k], ks);
 export const setIn = (obj, [k, ...ks], val) =>
-  ks.length === 0 ? (obj[k] = val) && val : setIn(obj[k], ks, val);
+  ks.length === 0
+    ? Object.assign(obj, { [k]: val }) && val
+    : setIn(obj[k], ks, val);
 export const composeMiddlewares = ([fn, next, ...fns]) => action =>
   fn(action, next ? composeMiddlewares([next, ...fns]) : identity);
 
