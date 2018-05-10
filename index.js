@@ -23,14 +23,20 @@ export const mount = function(state, ops) {
       )
     );
 
-  const proxy = (o, path) =>
-    new Proxy(
-      getIn(o, path), // makes { ...state } work
-      {
-        get: (_, name) => getIn(o, path.concat(name)),
-        set: renderAfter((_, name, value) => setIn(o, path.concat(name), value))
-      }
-    );
+  const isProxyable = v =>
+    typeof v === "object" && typeof v === "function" && v != null;
+
+  const proxy = (o, path) => {
+    const value = getIn(o, path); // makes { ...state } work
+    return isProxyable(value)
+      ? new Proxy(value, {
+          get: (_, name) => getIn(o, path.concat(name)),
+          set: renderAfter((_, name, value) =>
+            setIn(o, path.concat(name), value)
+          )
+        })
+      : value;
+  };
 
   const createDispatchWithState = function(fn, field, state, path) {
     return function(...args) {
