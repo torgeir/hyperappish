@@ -75,6 +75,13 @@ export const mount = function(state, ops) {
     const path = action.path.slice(1);
     const ctx = path.length == 0 ? actions : getIn(actions, path);
     const result = action.fn.call(ctx, ...action.args, action.state, actions);
+    if (result === undefined) {
+      console.warn(
+        `Action ${action.type}(${
+          action.args.length > 0 ? action.args.map(JSON.stringify) : ""
+        }) failed to produce a result, did you forget to provide a return value?`
+      );
+    }
     return next({ ...action, result });
   }
 
