@@ -42,7 +42,13 @@ export const mount = function(state, ops) {
     return function(...args) {
       const handlers = composeMiddlewares(
         middlewares.concat(
-          renderAfter(action => setIn(state, path, action.result))
+          renderAfter(action => {
+            if (path.length == 1) {
+              Object.assign(state.state, action.result);
+            } else {
+              setIn(state, path, action.result);
+            }
+          })
         )
       );
 
