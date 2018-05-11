@@ -2,29 +2,27 @@ export const identity = v => v;
 export const doto = (o, fn) => (fn(o), o);
 export const getIn = (obj, [k, ...ks]) =>
   ks.length === 0 ? obj[k] : getIn(obj[k], ks);
-export const setIn = (obj, [k, ...ks], val) =>
-  ks.length === 0
-    ? Object.assign(obj, { [k]: val }) && val
-    : setIn(obj[k], ks, val);
+const wrap = (val, [p, ...ps]) => (p == null ? val : wrap({ [p]: val }, ps));
+export const setIn = (obj, path, val) =>
+  Object.assign(obj, wrap(val, path.reverse()));
 export const composeMiddlewares = ([fn, next, ...fns]) => action =>
   fn(action, next ? composeMiddlewares([next, ...fns]) : identity);
+
+const is = t => v => typeof v === t,
+  isObject = is("object"),
+  isFunction = is("function"),
+  isProxyable = v => isObject(v) && isFunction(v) && v != null;
 
 export const mount = function(state, ops) {
   const wrappedState = { state };
 
-  let render,
+  let renderer,
     middlewares = [callAction];
 
-  const renderAfter = fn => (...args) =>
-    doto(fn(...args), _ =>
-      setTimeout(
-        _ => typeof render === "function" && render(wrappedState.state),
-        0
-      )
-    );
+  const render = _ => isFunction(renderer) && renderer(wrappedState.state);
 
-  const isProxyable = v =>
-    typeof v === "object" && typeof v === "function" && v != null;
+  const renderAfter = fn => (...args) =>
+    doto(fn(...args), _ => setTimeout(render, 0));
 
   const proxy = (o, path) => {
     const value = getIn(o, path); // makes { ...state } work
@@ -38,28 +36,20 @@ export const mount = function(state, ops) {
       : value;
   };
 
-  const createDispatchWithState = function(fn, field, state, path) {
-    return function(...args) {
-      const handlers = composeMiddlewares(
-        middlewares.concat(
-          renderAfter(action => {
-            if (path.length == 1) {
-              Object.assign(state.state, action.result);
-            } else {
-              setIn(state, path, action.result);
-            }
-          })
-        )
-      );
-
-      const type = path
+  const createDispatchWithState = (fn, field, state, path) => (...args) =>
+    composeMiddlewares([
+      ...middlewares,
+      renderAfter(action => setIn(state.state, path.slice(1), action.result))
+    ])({
+      fn,
+      args,
+      path,
+      state: proxy({ ...state }, path),
+      type: path
         .slice(1)
         .concat(field)
-        .join(".");
-
-      handlers({ type, fn, args, path, state: proxy({ ...state }, path) });
-    };
-  };
+        .join(".")
+    });
 
   const patch = (ops, state, path) =>
     Object.keys(ops).reduce(
@@ -67,10 +57,9 @@ export const mount = function(state, ops) {
         doto(
           acc,
           acc =>
-            (acc[field] =
-              typeof ops[field] == "function"
-                ? createDispatchWithState(ops[field], field, state, path)
-                : patch(ops[field], state, path.concat(field)))
+            (acc[field] = isFunction(ops[field])
+              ? createDispatchWithState(ops[field], field, state, path)
+              : patch(ops[field], state, path.concat(field)))
         ),
       {}
     );
@@ -94,8 +83,8 @@ export const mount = function(state, ops) {
   return {
     actions,
     middleware: { callAction },
-    run: renderAfter((_render, _middlewares = middlewares) => {
-      render = _render;
+    run: renderAfter((_renderer, _middlewares = middlewares) => {
+      renderer = _renderer;
       middlewares = _middlewares;
     }),
     setState: renderAfter(state => {
