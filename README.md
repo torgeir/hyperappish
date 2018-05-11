@@ -54,6 +54,8 @@ This renders a button with the value `42++` that when clicked will increment its
 
 [Run it](https://x3jvx127jq.codesandbox.io/) or [play with it](https://codesandbox.io/s/x3jvx127jq) in codesandbox.
 
+Or head over to [torgeir/hyperappish-example](https://github.com/torgeir/hyperappish-example/) for a complete example.
+
 ## Promises, observables and middleware
 
 This larger, contrieved example shows how to
