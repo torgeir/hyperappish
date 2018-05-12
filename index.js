@@ -19,10 +19,10 @@ export const mount = function(state, ops) {
   let renderer,
     middlewares = [callAction];
 
-  const render = _ => isFunction(renderer) && renderer(wrappedState.state);
+  const render = _ =>
+    isFunction(renderer) && setTimeout(() => renderer(wrappedState.state));
 
-  const renderAfter = fn => (...args) =>
-    doto(fn(...args), _ => setTimeout(render, 0));
+  const renderAfter = fn => (...args) => doto(fn(...args), render);
 
   const proxy = (o, path) => {
     const value = getIn(o, path); // makes { ...state } work
