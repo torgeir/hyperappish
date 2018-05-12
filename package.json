@@ -1,6 +1,6 @@
 {
   "name": "hyperappish",
-  "version": "1.4.4",
+  "version": "1.4.5",
   "description": "A minimal, hyperapp-like, wired action, state handling thingy that works with plain react components",
   "main": "dist/index.js",
   "scripts": {
