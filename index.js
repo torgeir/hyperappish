@@ -86,7 +86,7 @@ export const mount = function(state, ops) {
       renderer = _renderer;
       middlewares = _middlewares;
     }),
-    getState: () => wrappedState.state,
+    getState: _ => wrappedState.state,
     setState: renderAfter(state => {
       wrappedState.state = state;
       return wrappedState.state;
