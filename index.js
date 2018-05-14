@@ -2,9 +2,8 @@ export const identity = v => v;
 export const doto = (o, fn) => (fn(o), o);
 export const getIn = (obj, [k, ...ks]) =>
   ks.length === 0 ? obj[k] : getIn(obj[k], ks);
-const wrap = (val, [p, ...ps]) => (p == null ? val : wrap({ [p]: val }, ps));
-export const setIn = (obj, path, val) =>
-  Object.assign(obj, wrap(val, path.reverse()));
+export const setIn = (obj, [k, ...ks], val) =>
+  ks.length === 0 ? ((obj[k] = val), val) : setIn(obj[k], ks, val);
 export const composeMiddlewares = ([fn, next, ...fns]) => action =>
   fn(action, next ? composeMiddlewares([next, ...fns]) : identity);
 
@@ -39,7 +38,7 @@ export const mount = function(state, ops) {
   const createDispatchWithState = (fn, field, state, path) => (...args) =>
     composeMiddlewares([
       ...middlewares,
-      renderAfter(action => setIn(state.state, path.slice(1), action.result))
+      renderAfter(action => setIn(wrappedState, path, action.result))
     ])({
       fn,
       args,
@@ -87,6 +86,7 @@ export const mount = function(state, ops) {
       renderer = _renderer;
       middlewares = _middlewares;
     }),
+    getState: () => wrappedState.state,
     setState: renderAfter(state => {
       wrappedState.state = state;
       return wrappedState.state;

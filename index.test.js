@@ -72,6 +72,14 @@ test("setState resets state, e.g. for time travel debugging", done => {
   setState({ counter: 42 });
 });
 
+test("getState expose state for use outside of render", () => {
+  const state = { counter: 42 };
+
+  const { getState } = mount(state, {});
+
+  expect(getState()).toEqual({ counter: 42 });
+});
+
 test("middleware tracks action invocation", done => {
   let i = 0;
   const ops = { doit: _ => _ };
@@ -100,8 +108,9 @@ test("middleware can change action semantics", done => {
   actions.counter.inc(41);
 });
 
-test("initial state reference is not lost when root action creates entirely new datastructure", done => {
+test("actions replace their scoped state in its entirety", done => {
   const state = {
+    iAmRemoved: true,
     items: [1, 2]
   };
   const ops = {
@@ -115,7 +124,7 @@ test("initial state reference is not lost when root action creates entirely new 
   let i = 0;
   run(
     after(
-      s => expect(state.items).toEqual(expect.arrayContaining([1, 2, 3])),
+      s => expect(s).toEqual({ items: expect.arrayContaining([1, 2, 3]) }),
       done
     )
   );
