@@ -1,6 +1,7 @@
 # hyperappish
 
 [![npm](https://img.shields.io/npm/v/hyperappish.svg)](https://www.npmjs.org/package/hyperappish)
+[![Build Status](https://travis-ci.org/torgeir/hyperappish.svg?branch=master)](https://travis-ci.org/torgeir/hyperappish)
 
 A minimal, zero dependency (!), [hyperapp](https://hyperapp.js.org/)-like, wired action, state handling-thingy that works with plain react components.
 
