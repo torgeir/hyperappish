@@ -29,7 +29,7 @@ const ops = {
 
 Actions are automatically bound to the part of the state that matches the key under which they are defined in the operations object ([much like in hyperapp](https://github.com/hyperapp/hyperapp#getting-started)). They are called with this part of the state automatically when invoked.
 
-E.g. the `increment` action will get passed the `counter` part of the state, as it resides under the `counter` key of the `ops` object, when it is invoked.
+E.g. the `increment` action will get passed the `counter` part of the state when it is invoked, as it resides under the `counter` key of the `ops` object.
 
 Call `mount` with the state and operations to connect them.
 
