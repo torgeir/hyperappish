@@ -107,7 +107,7 @@ const ops = {
   }
 };
 
-const { run, actions, middleware } = mount(state, ops);
+const { run, actions, middleware, getState } = mount(state, ops);
 
 const SelectedUser = ({ user }) => (
   <div>
@@ -171,11 +171,11 @@ const incrementer = action$ =>
 
 const el = document.querySelector(".app");
 run(state => ReactDOM.render(<App {...state} />, el), [
+  middlewares.logActions,
   middleware.callAction
   middlewares.promise,
   middlewares.observable(incrementer),
-  middlewares.logActions,
-  middlewares.logState
+  middlewares.logState(getState)
 ]);
 ```
 
@@ -183,7 +183,8 @@ run(state => ReactDOM.render(<App {...state} />, el), [
 
 ## Middlewares
 
-If you choose to provide your own middlewares, remember to add `middleware.callAction` (returned from `mount`) as the first middleware in the list. This is the middleware that hyperappish use to actually call the action function with its corresponding state before returning control to the other middlewares in the list.
+If you choose to provide your own middlewares, remember to add
+`middleware.callAction` (returned from `mount`) early in middleware list. This is the middleware that hyperappish use to actually call the action function with its corresponding state before returning control to the other middlewares.
 
 You can override the default middleware by passing a list of middlewares as the second parameter to `run()`. These receive each `action` and the `next` middleware in the list, and may choose how to proceed.
 
@@ -208,7 +209,11 @@ const middlewares = {
 
   logActions: (action, next) => (console.log("action", action), next(action)),
 
-  logState: (action, next) => (next(action), _ => console.log("state", state))
+  logState: getState => (action, next) => {
+    const res = next(action);
+    console.log("state", getState()));
+    return res;
+  }
 };
 ```
 

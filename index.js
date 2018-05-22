@@ -32,6 +32,8 @@ export const mount = function(state, ops) {
 
   const renderAfter = fn => (...args) => doto(fn(...args), render);
 
+  const id = (i => () => i++)(0);
+
   const proxy = (o, path) => {
     const value = getIn(o, path); // makes { ...state } work
     return isProxyable(value)
@@ -49,6 +51,7 @@ export const mount = function(state, ops) {
       ...middlewares,
       renderAfter(action => setIn(wrappedState, path, action.result))
     ])({
+      id: id(),
       fn,
       args,
       path,
