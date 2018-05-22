@@ -4,8 +4,17 @@ export const getIn = (obj, [k, ...ks]) =>
   ks.length === 0 ? obj[k] : getIn(obj[k], ks);
 export const setIn = (obj, [k, ...ks], val) =>
   ks.length === 0 ? ((obj[k] = val), val) : setIn(obj[k], ks, val);
-export const composeMiddlewares = ([fn, next, ...fns]) => action =>
-  fn(action, next ? composeMiddlewares([next, ...fns]) : identity);
+export const composeMiddlewares = fns => v => {
+  return call(0, v);
+
+  function call(i, v) {
+    let fn = fns[i];
+    if (i === fns.length) return v;
+    return fn(v, function next(v) {
+      return call(i + 1, v);
+    });
+  }
+};
 
 const is = t => v => typeof v === t,
   isObject = is("object"),
